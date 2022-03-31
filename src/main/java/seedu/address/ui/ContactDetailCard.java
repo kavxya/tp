@@ -1,24 +1,15 @@
 package seedu.address.ui;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.Comparator;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import seedu.address.model.ClipboardManager;
 import seedu.address.model.person.Person;
-import seedu.address.model.tag.Tag;
-
-import javax.swing.*;
-
-import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 /**
  * An UI component that displays {@code ContactDetail} of a {@code Person}.
@@ -132,16 +123,14 @@ public class ContactDetailCard extends UiPart<Region> {
             person.getSocialMedias().stream()
                     .sorted(Comparator.comparing(sm -> sm.platformName.getValue()))
                     .forEach(sm -> {
-                        
                         Label label = new Label(sm.getPlatformName()
                                 + ": " + sm.getPlatformDescription());
                         label.setOnMouseClicked(event ->
                                 clipboard.copy(sm.getPlatformDescription().getValue())
                         );
                         socialMedias.getChildren().add(label);
-
-                       
                     });
+
             index.set(1);
         }
 

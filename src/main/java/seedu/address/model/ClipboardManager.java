@@ -31,6 +31,10 @@ public class ClipboardManager {
 
     }
 
+    /**
+     * Copies the string value to the system clipboard.
+     * @param toCopy
+     */
     public void copy(String toCopy) {
 
         String str = toCopy.toString();
@@ -46,7 +50,6 @@ public class ClipboardManager {
      * Copies the tag to the system clipboard.
      * @param toCopy
      */
-
     public void copy(Tag toCopy) {
 
         String str = toCopy.toString();
