@@ -1,6 +1,9 @@
 package seedu.address.ui;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Comparator;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javafx.fxml.FXML;
@@ -9,7 +12,13 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import seedu.address.model.ClipboardManager;
 import seedu.address.model.person.Person;
+import seedu.address.model.tag.Tag;
+
+import javax.swing.*;
+
+import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 /**
  * An UI component that displays {@code ContactDetail} of a {@code Person}.
@@ -34,17 +43,17 @@ public class ContactDetailCard extends UiPart<Region> {
     @FXML
     private Label nameLabel;
     @FXML
-    private TextArea nameView;
+    private Label nameView;
 
     @FXML
     private Label phoneLabel;
     @FXML
-    private TextArea phoneView;
+    private Label phoneView;
 
     @FXML
     private Label emailLabel;
     @FXML
-    private TextArea emailView;
+    private Label emailView;
 
     @FXML
     private Label socialMediaLabel;
@@ -63,17 +72,40 @@ public class ContactDetailCard extends UiPart<Region> {
     public ContactDetailCard(Person person) {
         super(FXML);
         this.person = person;
+        ClipboardManager clipboard = new ClipboardManager();
 
         nameView.setText(person.getName().fullName);
+        nameView.setOnMouseClicked(event ->
+                clipboard.copy(person.getName().fullName)
+        );
         phoneView.setText(person.getPhone().value);
+        phoneView.setOnMouseClicked(event ->
+                clipboard.copy(person.getPhone().value)
+        );
         emailView.setText(person.getEmail().value);
+        emailView.setOnMouseClicked(event ->
+                clipboard.copy(person.getEmail().value)
+        );
 
-        phoneLabel.setText("Phone: ");
+        phoneLabel.setText("Phone:");
+        phoneLabel.setOnMouseClicked(event ->
+                clipboard.copy("Phone")
+        );
+
         emailLabel.setText("Email:");
+        emailLabel.setOnMouseClicked(event ->
+                clipboard.copy("Email")
+        );
+
         tagsLabel.setText("Tags");
+        tagsLabel.setOnMouseClicked(event ->
+                clipboard.copy("Tags")
+        );
+
         socialMediaLabel.setText("Social Media");
-
-
+        socialMediaLabel.setOnMouseClicked(event ->
+                clipboard.copy("Social Media")
+        );
 
         AtomicInteger index = new AtomicInteger(1);
 
@@ -84,25 +116,31 @@ public class ContactDetailCard extends UiPart<Region> {
             person.getTags().stream()
                     .sorted(Comparator.comparing(tag -> tag.tagName))
                     .forEach(tag -> {
-                        tags.getChildren().add(new Label(index + ". " + tag.tagName));
+                        Label taglabel = new Label(index + ". " + tag.tagName);
+                        taglabel.setOnMouseClicked(event ->
+                                clipboard.copy(tag.tagName)
+                        );
+                        tags.getChildren().add(taglabel);
                         index.addAndGet(1);
                     });
             index.set(1);
         }
 
         if (person.getSocialMedias().size() == 0) {
-            socialMedias.getChildren().add(new TextArea("-"));
+            socialMedias.getChildren().add(new Label("-"));
         } else {
             person.getSocialMedias().stream()
                     .sorted(Comparator.comparing(sm -> sm.platformName.getValue()))
                     .forEach(sm -> {
-                        TextArea textArea = new TextArea(sm.getPlatformName()
+                        
+                        Label label = new Label(sm.getPlatformName()
                                 + ": " + sm.getPlatformDescription());
-                        textArea.setPrefHeight(18); //sets height of the TextArea to 400 pixels
-                        textArea.setPrefWidth(360);
-                        textArea.setEditable(false);
+                        label.setOnMouseClicked(event ->
+                                clipboard.copy(sm.getPlatformDescription().getValue())
+                        );
+                        socialMedias.getChildren().add(label);
 
-                        socialMedias.getChildren().add(textArea);
+                       
                     });
             index.set(1);
         }
